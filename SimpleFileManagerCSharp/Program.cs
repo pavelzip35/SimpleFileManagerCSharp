@@ -18,7 +18,7 @@ public class FileManager
             Console.WriteLine("Welcome to the File Manager");
             /*Console.Write("Specify the directory you want to work with, otherwise the current one will be selected: ");
             var dir = Console.ReadLine();*/
-            loadFilesAndDirectories(@"D:\");
+            loadFilesAndDirectories(currentDirectory);
         }
         
     public void loadFilesAndDirectories(string path)
@@ -41,7 +41,7 @@ public class FileManager
     public void ChangingDirectory(string NewDirectory)
     {
         string newPath = Path.Combine(currentDirectory, NewDirectory);
-        if (!Directory.Exists(newPath))
+        if (Directory.Exists(newPath))
         {
             currentDirectory = newPath;
             Console.WriteLine("Changed directory to " + currentDirectory);
@@ -57,10 +57,10 @@ public class FileManager
         toPath = Path.Combine(currentDirectory, toPath);
         fromPath = Path.Combine(currentDirectory, fromPath);
 
-        if (!File.Exists(fromPath) && File.Exists(toPath))
+        if (File.Exists(fromPath) && File.Exists(toPath))
         {
-            File.Copy(fromPath, toPath);
-            Console.WriteLine("The directory was created successfully");
+            File.Copy(@fromPath, @toPath);
+            Console.WriteLine("The object was copied successfully");
         }
         else {
             Console.WriteLine("One of theese objects doesn't exists");
@@ -70,10 +70,11 @@ public class FileManager
     public void Deleting(string newPath)
     {
         string path = Path.Combine(currentDirectory, newPath);
-        if (!File.Exists(path))
+        if (File.Exists(path))
         {
             File.Delete(path);
-            Console.WriteLine("This object was created successfully");
+            //Console.WriteLine(path);
+            Console.WriteLine("This object was deleted successfully");
         }
         else
         {
@@ -102,6 +103,43 @@ public class FileManager
         {
             Console.WriteLine("");
         }
+    }
+
+    public void ReadAllText(string path)
+    {
+        path = Path.Combine(currentDirectory, path);
+
+        if (File.Exists(path))
+        {
+            string content = File.ReadAllText(path);
+            Console.WriteLine(content);
+        }
+        else
+        {
+            Console.WriteLine("File doesn't exist");
+        }
+    }
+
+    public void ReadLine(string path)
+    {
+        path = Path.Combine(currentDirectory, path);
+
+        if (File.Exists(path))
+        {
+            using (StreamReader sr = new StreamReader(path))
+            {
+                string line;
+                while((line = sr.ReadLine()) != null)
+                {
+                    Console.WriteLine(line);
+                }
+            }
+        }
+        else
+        {
+            Console.WriteLine("File doesn't exist");
+        }
+
     }
 
 
@@ -199,6 +237,33 @@ class Program
                 case "exit":
                     Environment.Exit(0);
                     break;
+
+                case "cat":
+                    try
+                    {
+                        Console.Write("Choose the file: ");
+                        var file = Console.ReadLine();
+                        manager.ReadLine(file);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
+                    break;
+
+                case "cat all":
+                    try
+                    {
+                        Console.Write("Choose the file: ");
+                        var file = Console.ReadLine();
+                        manager.ReadAllText(file);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
+                    break;
+
                 default:
                     Console.WriteLine("Unknown command");
                     break;

@@ -7,3 +7,4 @@ commands:
 *rm <path> - delete object
 *cp <path1> <path2> copy object on <path1> to <path2>
 *exit - exit the program
+*cat <path> - read text file
